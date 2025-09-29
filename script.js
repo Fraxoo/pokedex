@@ -75,7 +75,7 @@ async function main() {
             rightNom.textContent = pokemonByID.name;
             // Flush all previous types from view
             imageType.innerHTML = "";
-            
+
             // Append all types to view
             pokemonByID.apiTypes.forEach(type => {
                 const typeImg = document.createElement("img");
@@ -84,17 +84,27 @@ async function main() {
             });
 
             const evolutions = pokemonByID.apiEvolutions;
+            const evoId = detail.querySelector("#id");
+            const evoName = detail.querySelector("#nom");
+            const evoImg = detail.querySelector("#image");
+
+            evoId.innerHTML = "";
+            evoName.innerHTML = "";
+            evoImg.setAttribute("src","");
 
             for (const evolution of evolutions) {
+
                 evolutionID = evolution.pokedexId;
                 const pokemonByID = await getPokemonById(evolutionID);
                 console.log(pokemonByID);
                 const evoId = detail.querySelector("#id");
                 const evoName = detail.querySelector("#nom");
-                const evoImg = detail.querySelector("#image")
+                const evoImg = detail.querySelector("#image");
+                const pokeDiv = detail.querySelector(".pokemon");
+                pokeDiv.dataset.id = pokemonByID.pokedexId;
                 evoId.textContent = pokemonByID.pokedexId;
                 evoName.textContent = pokemonByID.name;
-                evoImg.setAttribute("src",pokemonByID.image);
+                evoImg.setAttribute("src", pokemonByID.image);
 
             }
 
