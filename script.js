@@ -1,6 +1,5 @@
 const leftBlock = document.querySelector(".left-block")
-const rightBlockTemplate = document.getElementById("right-block");
-
+const rightBlock = document.querySelector(".right-block")
 
 async function main() {
 
@@ -41,25 +40,45 @@ async function main() {
     });
 
 
-    const rightBlock = rightBlockTemplate.content.cloneNode(true);
+    const rightBlockTemplate = document.getElementById("right-detail")
+    const detail = rightBlockTemplate.content.cloneNode(true);
 
-    const rightId = rightBlock.querySelector("#right-id");
-    const rightImg = rightBlock.querySelector("#right-img");
-    const rightNom = rightBlock.querySelector("h1");
-    const rightTypesDiv = rightBlock.querySelector(".types");
+    const rightId = detail.querySelector("#right-id");
+    const rightImg = detail.querySelector("#right-img");
+    const rightNom = detail.querySelector("h1");
+    const rightTypesDiv = detail.querySelector(".types");
+    const rightEvoId = detail.getElementById("id");
+    const rightEvoName = detail.getElementById("nom");
+    const rightEvoImg = detail.getElementById("image");
 
-    rightId.textContent = pokemonByID.id;
+
+    rightId.textContent = `n° ${pokemonByID.id}`;
     rightImg.setAttribute("src", pokemonByID.image);
     rightNom.textContent = pokemonByID.name;
     const pokemonTypes = pokemonByID.apiTypes;
+
     pokemonTypes.forEach((type) => {
         const typeImg = document.createElement("img")
-        typeImg.setAttribute("src",type.image);
+        typeImg.setAttribute("src", type.image);
         rightTypesDiv.appendChild(typeImg);
     })
+
     
+    const evolutions = pokemonByID.apiEvolutions;
+    for(const evolution of evolutions){
+        const pokeEvo = await getPokemonById(evolution.pokedexId)
+        console.log(pokeEvo);
+        rightEvoId.textContent = pokeEvo.pokedexId;
+        rightEvoName.textContent = pokeEvo.name;
+        rightEvoImg.setAttribute("src",pokeEvo.image);
+        
+    }    
+
+ 
     
-    rightBlockTemplate.appendChild(rightBlock);
+
+
+    rightBlock.appendChild(detail);
 
 
 
