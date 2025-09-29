@@ -1,5 +1,6 @@
-const leftBlock = document.querySelector(".left-block")
-const rightBlock = document.querySelector(".right-block")
+const leftBlock = document.querySelector(".left-block");
+const rightBlock = document.querySelector(".right-block");
+
 
 async function main() {
 
@@ -19,9 +20,6 @@ async function main() {
         throw new Error("Erreur fetch");
     }
 
-    const pokemonByID = await getPokemonById(1);
-    console.log(pokemonByID);
-
     const allPokemon = await getAllPokemon();
     console.log(allPokemon);
 
@@ -30,62 +28,81 @@ async function main() {
         const cloneTemplateList = templateList.content.cloneNode(true);
         const leftId = cloneTemplateList.querySelector("#id");
         const leftName = cloneTemplateList.querySelector("#nom");
-        const leftImg = cloneTemplateList.querySelector("#image")
+        const leftImg = cloneTemplateList.querySelector("#image");
+        const pokeDiv = cloneTemplateList.querySelector(".pokemon");
 
+
+
+        pokeDiv.dataset.id = pokemon.id;
         leftId.innerText = pokemon.id;
+        leftId.dataset.id = pokemon.id;
         leftName.innerText = pokemon.name;
-        leftImg.setAttribute("src", pokemon.image)
+        leftName.dataset.id = pokemon.id;
+        leftImg.setAttribute("src", pokemon.image);
+        leftImg.dataset.id = pokemon.id;
+
 
         leftBlock.appendChild(cloneTemplateList);
+
+
     });
+    const pokemonDiv_elem = document.querySelectorAll(".pokemon");
+    pokemonDiv_elem.forEach(poke => {
+        poke.onclick = async function (event) {
 
 
-    const rightBlockTemplate = document.getElementById("right-detail")
-    const detail = rightBlockTemplate.content.cloneNode(true);
+            console.log(event.target);
+            const target = event.target;
+            const id = target.dataset.id;
 
-    const rightId = detail.querySelector("#right-id");
-    const rightImg = detail.querySelector("#right-img");
-    const rightNom = detail.querySelector("h1");
-    const rightTypesDiv = detail.querySelector(".types");
-    const rightEvoId = detail.getElementById("id");
-    const rightEvoName = detail.getElementById("nom");
-    const rightEvoImg = detail.getElementById("image");
+            const pokemonByID = await getPokemonById(id);
+            console.log(pokemonByID);
 
 
-    rightId.textContent = `n° ${pokemonByID.id}`;
-    rightImg.setAttribute("src", pokemonByID.image);
-    rightNom.textContent = pokemonByID.name;
-    const pokemonTypes = pokemonByID.apiTypes;
-
-    pokemonTypes.forEach((type) => {
-        const typeImg = document.createElement("img")
-        typeImg.setAttribute("src", type.image);
-        rightTypesDiv.appendChild(typeImg);
-    })
-
-    
-    const evolutions = pokemonByID.apiEvolutions;
-    for(const evolution of evolutions){
-        const pokeEvo = await getPokemonById(evolution.pokedexId)
-        console.log(pokeEvo);
-        rightEvoId.textContent = pokeEvo.pokedexId;
-        rightEvoName.textContent = pokeEvo.name;
-        rightEvoImg.setAttribute("src",pokeEvo.image);
-        
-    }    
-
- 
-    
+            const rightBlockTemplate = document.getElementById("right-detail")
+            const detail = document.querySelector(".right-block");
+            const imageType = detail.querySelector(".types");
 
 
-    rightBlock.appendChild(detail);
+            const rightId = detail.querySelector("#right-id");
+            const rightImg = detail.querySelector("#right-img");
+            const rightNom = detail.querySelector("h1");
+            const rightTypesDiv = detail.querySelector(".types");
+
+
+            rightId.textContent = `n° ${pokemonByID.id}`;
+            rightImg.setAttribute("src", pokemonByID.image);
+            rightNom.textContent = pokemonByID.name;
+            // Flush all previous types from view
+            imageType.innerHTML = "";
+            
+            // Append all types to view
+            pokemonByID.apiTypes.forEach(type => {
+                const typeImg = document.createElement("img");
+                typeImg.setAttribute("src", type.image);
+                imageType.appendChild(typeImg);
+            });
+
+            const evolutions = pokemonByID.apiEvolutions;
+
+            for (const evolution of evolutions) {
+                evolutionID = evolution.pokedexId;
+                const pokemonByID = await getPokemonById(evolutionID);
+                console.log(pokemonByID);
+                const evoId = detail.querySelector("#id");
+                const evoName = detail.querySelector("#nom");
+                const evoImg = detail.querySelector("#image")
+                evoId.textContent = pokemonByID.pokedexId;
+                evoName.textContent = pokemonByID.name;
+                evoImg.setAttribute("src",pokemonByID.image);
+
+            }
 
 
 
 
-
-
-
+        }
+    });
 
 
 
