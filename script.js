@@ -90,7 +90,7 @@ async function main() {
 
             evoId.innerHTML = "";
             evoName.innerHTML = "";
-            evoImg.setAttribute("src","");
+            evoImg.setAttribute("src", "");
 
             for (const evolution of evolutions) {
 
@@ -108,13 +108,75 @@ async function main() {
 
             }
 
-
-
-
         }
+
+
+
     });
 
+    const form_elem = document.querySelector("#search");
 
+    form_elem.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData_obj = new FormData(form_elem);
+        const reponse = await fetch("https://pokebuildapi.fr/api/v1/pokemon/" + formData_obj.get("poke-name"));
+        const pokemon = await reponse.json();
+        console.log(pokemon);
+
+        pokeID = pokemon.pokedexId;
+        const pokemonByID = await getPokemonById(pokeID);
+        const rightBlockTemplate = document.getElementById("right-detail")
+            const detail = document.querySelector(".right-block");
+            const imageType = detail.querySelector(".types");
+
+
+            const rightId = detail.querySelector("#right-id");
+            const rightImg = detail.querySelector("#right-img");
+            const rightNom = detail.querySelector("h1");
+            const rightTypesDiv = detail.querySelector(".types");
+
+
+            rightId.textContent = `n° ${pokemonByID.id}`;
+            rightImg.setAttribute("src", pokemonByID.image);
+            rightNom.textContent = pokemonByID.name;
+            // Flush all previous types from view
+            imageType.innerHTML = "";
+
+            // Append all types to view
+            pokemonByID.apiTypes.forEach(type => {
+                const typeImg = document.createElement("img");
+                typeImg.setAttribute("src", type.image);
+                imageType.appendChild(typeImg);
+            });
+
+            const evolutions = pokemonByID.apiEvolutions;
+            const evoId = detail.querySelector("#id");
+            const evoName = detail.querySelector("#nom");
+            const evoImg = detail.querySelector("#image");
+
+            evoId.innerHTML = "";
+            evoName.innerHTML = "";
+            evoImg.setAttribute("src", "");
+
+            for (const evolution of evolutions) {
+
+                evolutionID = evolution.pokedexId;
+                const pokemonByID = await getPokemonById(evolutionID);
+                console.log(pokemonByID);
+                const evoId = detail.querySelector("#id");
+                const evoName = detail.querySelector("#nom");
+                const evoImg = detail.querySelector("#image");
+                const pokeDiv = detail.querySelector(".pokemon");
+                pokeDiv.dataset.id = pokemonByID.pokedexId;
+                evoId.textContent = pokemonByID.pokedexId;
+                evoName.textContent = pokemonByID.name;
+                evoImg.setAttribute("src", pokemonByID.image);
+
+            }
+
+        })
+
+    
 
 
 
